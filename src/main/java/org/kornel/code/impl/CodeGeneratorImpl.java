@@ -15,7 +15,7 @@ public final class CodeGeneratorImpl implements CodeGenerator {
     @Override
     public Code generate(final int length, final int maxColor) {
 
-        final int[] result = new int[length];
+        final Integer[] result = new Integer[length];
         for (int i = 0; i < length; ++i) {
             result[i] = colorGenerator.getRandomColor(maxColor);
         }

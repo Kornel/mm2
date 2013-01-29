@@ -9,8 +9,8 @@ public class CodeTest {
     @Test(expected = IllegalStateException.class)
     public void shouldRefuseMatchingWhenCodeSizesDiffer() {
         // given
-        final Code code = new Code(new int[] { 1 });
-        final Code secret = new Code(new int[] { 1, 2 });
+        final Code code = new Code(1);
+        final Code secret = new Code(1, 2);
 
         // when
         code.matchesAt(0, secret);
@@ -22,8 +22,8 @@ public class CodeTest {
     @Test
     public void shouldReportColorMatch() {
         // given
-        final Code code = new Code(new int[] { 1 });
-        final Code secret = new Code(new int[] { 1 });
+        final Code code = new Code(1);
+        final Code secret = new Code(1);
 
         // when
         final boolean matches = code.matchesAt(0, secret);
@@ -35,7 +35,7 @@ public class CodeTest {
     @Test(expected = IllegalStateException.class)
     public void souldFailWhenRequestedIndexIsBelowZero() {
         // given
-        final Code code = new Code(new int[] { 1, 2, 3 });
+        final Code code = new Code(1, 2, 3);
 
         // when
         code.getColor(-1);
@@ -47,7 +47,7 @@ public class CodeTest {
     @Test(expected = IllegalStateException.class)
     public void souldFailWhenRequestedIndexIsTooHigh() {
         // given
-        final Code code = new Code(new int[] { 1 });
+        final Code code = new Code(1);
 
         // when
         code.getColor(1);
@@ -59,7 +59,7 @@ public class CodeTest {
     @Test
     public void souldReturnCodeLength() {
         // given
-        final Code code = new Code(new int[] { 1, 2, 3 });
+        final Code code = new Code(1, 2, 3);
 
         // when
         final int size = code.getSize();
@@ -72,7 +72,7 @@ public class CodeTest {
     @Test
     public void souldReturnValidCode() {
         // given
-        final Code code = new Code(new int[] { 1, 2, 3 });
+        final Code code = new Code(1, 2, 3);
 
         // when
         final int color1 = code.getColor(0);

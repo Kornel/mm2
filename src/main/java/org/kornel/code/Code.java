@@ -7,16 +7,14 @@ import java.util.Arrays;
 public final class Code {
 
     private final int[] code;
+    private final int hash;
 
-    public Code(final int[] code) {
-        this.code = code;
-    }
-
-    public Code(final Integer[] code) {
+    public Code(final Integer... code) {
         this.code = new int[code.length];
         for (int i = 0; i < code.length; ++i) {
             this.code[i] = code[i];
         }
+        this.hash = Arrays.hashCode(this.code);
     }
 
     @Override
@@ -28,7 +26,7 @@ public final class Code {
         } else if (obj == null) {
             result = false;
         } else if (obj.getClass().equals(Code.class)) {
-            result = Arrays.equals(code, (int[]) obj);
+            result = Arrays.equals(code, ((Code) obj).code);
         } else {
             result = false;
         }
@@ -46,7 +44,7 @@ public final class Code {
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(code);
+        return hash;
     }
 
     public boolean matchesAt(final int position, final Code other) {

@@ -4,10 +4,9 @@ import java.util.LinkedList;
 import java.util.Random;
 
 import org.kornel.code.Code;
-import org.kornel.code.CodeEvaluator;
 import org.kornel.code.CodeGenerator;
 import org.kornel.code.CodeResult;
-import org.kornel.code.impl.CodeEvaluatorImpl;
+import org.kornel.code.impl.CachingCodeEvaluatorImpl;
 import org.kornel.code.impl.CodeGeneratorImpl;
 import org.kornel.code.impl.NonRepeatingGeneratorImpl;
 import org.kornel.color.ColorGenerator;
@@ -24,30 +23,14 @@ public class Game {
     private final static int MAXCOLOR = 6;
 
     public static void main(final String[] args) {
-        long nanoAvg = 0;
-        int guessesAvg = 0;
-
-        final int total = 1000;
-
-        for (int i = 0; i < total; ++i) {
-            final GameResult play = new Game().play();
-
-            nanoAvg += play.getNanoSeconds();
-            guessesAvg += play.getGuesses();
-
-            if (i % 100 == 0) {
-                log.info("Game {} out of {}", i + 1, total);
-            }
-        }
-
-        log.info("Average time: {} seconds", nanoAvg / (double) total / 1000000000);
-        log.info("Average guesses: {}", guessesAvg / (double) total);
+        new Game().playMultiple();
     }
 
     private final ColorGenerator colorGenerator = new RandomColorGeneratorImpl(new Random());
+
     private final CodeGenerator codeGenerator = new CodeGeneratorImpl(colorGenerator);
     private final NonRepeatingGeneratorImpl nonRepeatingGenerator = new NonRepeatingGeneratorImpl(LENGTH, MAXCOLOR);
-    private final CodeEvaluator codeEvaluator = new CodeEvaluatorImpl();
+    private final CachingCodeEvaluatorImpl codeEvaluator = new CachingCodeEvaluatorImpl();
 
     public GameResult play() {
 
@@ -59,7 +42,7 @@ public class Game {
 
         final long nanoTime1 = System.nanoTime();
 
-        final Builder solveBuilder = solve(LENGTH, MAXCOLOR, nonRepeatingGenerator, codeEvaluator, secret);
+        final Builder solveBuilder = solve(LENGTH, MAXCOLOR, secret);
 
         final long nanoTime2 = System.nanoTime();
 
@@ -72,8 +55,29 @@ public class Game {
         return solveBuilder.build();
     }
 
-    private GameResult.Builder solve(final int length, final int maxColor,
-            final NonRepeatingGeneratorImpl nonRepeatingGenerator, final CodeEvaluator codeEvaluator, final Code secret) {
+    public void playMultiple() {
+        long nanoAvg = 0;
+        int guessesAvg = 0;
+
+        final int total = 1000;
+
+        for (int i = 0; i < total; ++i) {
+            final GameResult play = play();
+
+            nanoAvg += play.getNanoSeconds();
+            guessesAvg += play.getGuesses();
+
+            if (i % 100 == 0) {
+                log.info("Game {} out of {}", i + 1, total);
+            }
+        }
+
+        log.info("Average time: {} seconds", nanoAvg / (double) total / 1000000000);
+        log.info("Average guesses: {}", guessesAvg / (double) total);
+        // log.info("X: {}", codeEvaluator.x);
+    }
+
+    private GameResult.Builder solve(final int length, final int maxColor, final Code secret) {
         int n = 0;
 
         final GameResult.Builder builder = new GameResult.Builder();
@@ -108,7 +112,7 @@ public class Game {
             log.debug("Guess[{}] after {} has result {}", n, code, result);
 
             if (result.getBlack() == length) {
-                log.info("Found solution for {} as {} after {} tries", secret, code, n);
+                log.debug("Found solution for {} as {} after {} tries", secret, code, n);
                 break;
             }
         } while (n++ < 1000);

@@ -13,8 +13,8 @@ public class CodeEvaluatorImplTest {
     @Test
     public void shouldReportAllBlack() {
         // given
-        final Code code = new Code(new int[] { 1, 2, 3, 4 });
-        final Code secret = new Code(new int[] { 1, 2, 3, 4 });
+        final Code code = new Code(1, 2, 3, 4);
+        final Code secret = new Code(1, 2, 3, 4);
 
         // when
         final CodeResult result = evaluator.evalute(code, secret);
@@ -26,8 +26,8 @@ public class CodeEvaluatorImplTest {
     @Test
     public void shouldReportAllWhite() {
         // given
-        final Code code = new Code(new int[] { 1, 2, 3, 4 });
-        final Code secret = new Code(new int[] { 4, 3, 2, 1 });
+        final Code code = new Code(1, 2, 3, 4);
+        final Code secret = new Code(4, 3, 2, 1);
 
         // when
         final CodeResult result = evaluator.evalute(code, secret);
@@ -39,8 +39,8 @@ public class CodeEvaluatorImplTest {
     @Test
     public void shouldReportOneBlack() {
         // given
-        final Code code = new Code(new int[] { 1, 2, 3, 4 });
-        final Code secret = new Code(new int[] { 1, 0, 0, 0 });
+        final Code code = new Code(1, 2, 3, 4);
+        final Code secret = new Code(1, 0, 0, 0);
 
         // when
         final CodeResult result = evaluator.evalute(code, secret);
@@ -52,8 +52,8 @@ public class CodeEvaluatorImplTest {
     @Test
     public void shouldReportOneBlackOneWhite() {
         // given
-        final Code code = new Code(new int[] { 1, 1, 2, 1 });
-        final Code secret = new Code(new int[] { 1, 2, 0, 0 });
+        final Code code = new Code(1, 1, 2, 1);
+        final Code secret = new Code(1, 2, 0, 0);
 
         // when
         final CodeResult result = evaluator.evalute(code, secret);
@@ -65,8 +65,8 @@ public class CodeEvaluatorImplTest {
     @Test
     public void shouldReportOneWhite() {
         // given
-        final Code code = new Code(new int[] { 1, 2, 3, 4 });
-        final Code secret = new Code(new int[] { 0, 1, 0, 1 });
+        final Code code = new Code(1, 2, 3, 4);
+        final Code secret = new Code(0, 1, 0, 1);
 
         // when
         final CodeResult result = evaluator.evalute(code, secret);
@@ -78,8 +78,8 @@ public class CodeEvaluatorImplTest {
     @Test
     public void shouldReportTwoBlackAndOneWhite() {
         // given
-        final Code code = new Code(new int[] { 1, 2, 3, 5 });
-        final Code secret = new Code(new int[] { 1, 2, 4, 3 });
+        final Code code = new Code(1, 2, 3, 5);
+        final Code secret = new Code(1, 2, 4, 3);
 
         // when
         final CodeResult result = evaluator.evalute(code, secret);
@@ -91,8 +91,8 @@ public class CodeEvaluatorImplTest {
     @Test
     public void shouldReportTwoBlackAndTwoWhite() {
         // given
-        final Code code = new Code(new int[] { 1, 2, 3, 5 });
-        final Code secret = new Code(new int[] { 1, 2, 5, 3 });
+        final Code code = new Code(1, 2, 3, 5);
+        final Code secret = new Code(1, 2, 5, 3);
 
         // when
         final CodeResult result = evaluator.evalute(code, secret);
@@ -104,8 +104,8 @@ public class CodeEvaluatorImplTest {
     @Test
     public void shouldReportTwoWhiteAndOneBlack() {
         // given
-        final Code code = new Code(new int[] { 1, 2, 2, 4 });
-        final Code secret = new Code(new int[] { 4, 3, 2, 1 });
+        final Code code = new Code(1, 2, 2, 4);
+        final Code secret = new Code(4, 3, 2, 1);
 
         // when
         final CodeResult result = evaluator.evalute(code, secret);
