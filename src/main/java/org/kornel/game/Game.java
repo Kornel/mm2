@@ -4,9 +4,11 @@ import java.util.LinkedList;
 import java.util.Random;
 
 import org.kornel.code.Code;
+import org.kornel.code.CodeEvaluator;
 import org.kornel.code.CodeGenerator;
 import org.kornel.code.CodeResult;
 import org.kornel.code.impl.CachingCodeEvaluatorImpl;
+import org.kornel.code.impl.CodeEvaluatorImpl;
 import org.kornel.code.impl.CodeGeneratorImpl;
 import org.kornel.code.impl.NonRepeatingGeneratorImpl;
 import org.kornel.color.ColorGenerator;
@@ -23,14 +25,24 @@ public class Game {
     private final static int MAXCOLOR = 6;
 
     public static void main(final String[] args) {
-        new Game().playMultiple();
+        log.info("Playing with regular evaluator");
+        new Game(new CodeEvaluatorImpl()).playMultiple();
+        log.info("Playing with caching evaluator");
+        new Game(new CachingCodeEvaluatorImpl()).playMultiple();
     }
 
     private final ColorGenerator colorGenerator = new RandomColorGeneratorImpl(new Random());
 
     private final CodeGenerator codeGenerator = new CodeGeneratorImpl(colorGenerator);
+
     private final NonRepeatingGeneratorImpl nonRepeatingGenerator = new NonRepeatingGeneratorImpl(LENGTH, MAXCOLOR);
-    private final CachingCodeEvaluatorImpl codeEvaluator = new CachingCodeEvaluatorImpl();
+    // private final CachingCodeEvaluatorImpl codeEvaluator = new
+    // CachingCodeEvaluatorImpl();
+    private final CodeEvaluator codeEvaluator;
+
+    private Game(final CodeEvaluator evaluator) {
+        this.codeEvaluator = evaluator;
+    }
 
     public GameResult play() {
 
