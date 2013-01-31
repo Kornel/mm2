@@ -7,7 +7,7 @@ import org.kornel.code.Code;
 import org.kornel.code.CodeEvaluator;
 import org.kornel.code.CodeGenerator;
 import org.kornel.code.CodeResult;
-import org.kornel.code.impl.CachingCodeEvaluatorImpl;
+import org.kornel.code.CodeWithResult;
 import org.kornel.code.impl.CodeEvaluatorImpl;
 import org.kornel.code.impl.CodeGeneratorImpl;
 import org.kornel.code.impl.NonRepeatingGeneratorImpl;
@@ -27,8 +27,6 @@ public class Game {
     public static void main(final String[] args) {
         log.info("Playing with regular evaluator");
         new Game(new CodeEvaluatorImpl()).playMultiple();
-        log.info("Playing with caching evaluator");
-        new Game(new CachingCodeEvaluatorImpl()).playMultiple();
     }
 
     private final ColorGenerator colorGenerator = new RandomColorGeneratorImpl(new Random());
@@ -36,8 +34,6 @@ public class Game {
     private final CodeGenerator codeGenerator = new CodeGeneratorImpl(colorGenerator);
 
     private final NonRepeatingGeneratorImpl nonRepeatingGenerator = new NonRepeatingGeneratorImpl(LENGTH, MAXCOLOR);
-    // private final CachingCodeEvaluatorImpl codeEvaluator = new
-    // CachingCodeEvaluatorImpl();
     private final CodeEvaluator codeEvaluator;
 
     private Game(final CodeEvaluator evaluator) {
@@ -71,7 +67,7 @@ public class Game {
         long nanoAvg = 0;
         int guessesAvg = 0;
 
-        final int total = 100;
+        final int total = 1000;
         final int step = total / 10;
 
         for (int i = 0; i < total; ++i) {
@@ -87,7 +83,6 @@ public class Game {
 
         log.info("Average time: {} seconds", nanoAvg / (double) total / 1000000000);
         log.info("Average guesses: {}", guessesAvg / (double) total);
-        log.info("Evaluator stats: {}", codeEvaluator.getStats());
     }
 
     private GameResult.Builder solve(final int length, final int maxColor, final Code secret) {
@@ -95,7 +90,7 @@ public class Game {
 
         final GameResult.Builder builder = new GameResult.Builder();
 
-        final LinkedList<Code> guesses = new LinkedList<>();
+        final LinkedList<CodeWithResult> guesses = new LinkedList<>();
 
         do {
 
@@ -105,9 +100,9 @@ public class Game {
                 code = nonRepeatingGenerator.generate(length, maxColor);
 
                 int equal = 0;
-                for (final Code guess : guesses) {
-                    final CodeResult baseEval = codeEvaluator.evalute(guess, secret);
-                    final CodeResult guessEval = codeEvaluator.evalute(code, guess);
+                for (final CodeWithResult guess : guesses) {
+                    final CodeResult baseEval = guess.getCodeResult();
+                    final CodeResult guessEval = codeEvaluator.evalute(code, guess.getCode());
                     if (guessEval.equals(baseEval)) {
                         equal++;
                     }
@@ -118,13 +113,12 @@ public class Game {
 
             } while (!done);
 
-            guesses.add(code);
+            final CodeResult codeResult = codeEvaluator.evalute(code, secret);
+            guesses.add(new CodeWithResult(code, codeResult));
 
-            final CodeResult result = codeEvaluator.evalute(code, secret);
+            log.debug("Guess[{}] after {} has result {}", n, code, codeResult);
 
-            log.debug("Guess[{}] after {} has result {}", n, code, result);
-
-            if (result.getBlack() == length) {
+            if (codeResult.getBlack() == length) {
                 log.debug("Found solution for {} as {} after {} tries", secret, code, n);
                 break;
             }
