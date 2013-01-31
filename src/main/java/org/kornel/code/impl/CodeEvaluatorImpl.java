@@ -32,4 +32,9 @@ public final class CodeEvaluatorImpl implements CodeEvaluator {
         return new CodeResult(black, rest.size());
     }
 
+    @Override
+    public String getStats() {
+        return "";
+    }
+
 }

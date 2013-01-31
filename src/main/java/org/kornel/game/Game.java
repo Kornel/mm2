@@ -71,7 +71,8 @@ public class Game {
         long nanoAvg = 0;
         int guessesAvg = 0;
 
-        final int total = 1000;
+        final int total = 100;
+        final int step = total / 10;
 
         for (int i = 0; i < total; ++i) {
             final GameResult play = play();
@@ -79,14 +80,14 @@ public class Game {
             nanoAvg += play.getNanoSeconds();
             guessesAvg += play.getGuesses();
 
-            if (i % 100 == 0) {
+            if (i % step == 0) {
                 log.info("Game {} out of {}", i + 1, total);
             }
         }
 
         log.info("Average time: {} seconds", nanoAvg / (double) total / 1000000000);
         log.info("Average guesses: {}", guessesAvg / (double) total);
-        // log.info("X: {}", codeEvaluator.x);
+        log.info("Evaluator stats: {}", codeEvaluator.getStats());
     }
 
     private GameResult.Builder solve(final int length, final int maxColor, final Code secret) {
